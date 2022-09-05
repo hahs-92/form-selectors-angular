@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ServiceCountryService } from '../../service/service-country.service';
 import { SmallCountry } from '../../interfaces/country.interface';
+import { switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-selector-page',
@@ -25,14 +26,29 @@ export class SelectorPageComponent implements OnInit {
   ngOnInit(): void {
     this.regions = this.serviceCountry.regions;
 
-    this.myForm.get('region')?.valueChanges.subscribe((region) => {
-      this.serviceCountry
-        .getCountriesByRegion(region!)
-        .subscribe((countries) => {
-          this.countries = countries;
-          console.log(countries);
-        });
-    });
+    this.myForm
+      .get('region')
+      ?.valueChanges.pipe(
+        tap((_) => {
+          this.myForm.get('country')?.reset('');
+        }),
+        switchMap((region) => {
+          return this.serviceCountry.getCountriesByRegion(region!);
+        })
+      )
+      .subscribe((countries) => {
+        this.countries = countries;
+        console.log(countries);
+      });
+
+    // this.myForm.get('region')?.valueChanges.subscribe((region) => {
+    //   this.serviceCountry
+    //     .getCountriesByRegion(region!)
+    //     .subscribe((countries) => {
+    //       this.countries = countries;
+    //       console.log(countries);
+    //     });
+    // });
   }
 
   save() {
