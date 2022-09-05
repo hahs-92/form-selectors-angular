@@ -1,1 +1,31 @@
-<p>selector-page works!</p>
+<h1 class="mt-5">Selectores anidados</h1>
+<hr />
+
+<form [formGroup]="myForm" (ngSubmit)="save()">
+  <section class="row mb-3">
+    <article class="col">
+      <label for="region" class="form-label">Continente:</label>
+      <select
+        class="form-control"
+        name="region"
+        formControlName="region"
+        id="region"
+      >
+        <option value="">-- Seleccione Continente --</option>
+        <option *ngFor="let region of regions" [value]="region | lowercase">
+          {{ region }}
+        </option>
+      </select>
+    </article>
+  </section>
+
+  <section class="row">
+    <article class="col">
+      <button class="btn btn-primary float-end">Seleccionar</button>
+    </article>
+  </section>
+</form>
+
+<h3>Formulario</h3>
+<pre>Valid : {{ myForm.valid }}</pre>
+<pre>Value : {{ myForm.value | json }}</pre>
