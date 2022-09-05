@@ -19,6 +19,23 @@
     </article>
   </section>
 
+  <section class="row mb-3">
+    <article class="col">
+      <label for="region" class="form-label">Continente:</label>
+      <select
+        class="form-control"
+        name="country"
+        formControlName="country"
+        id="region"
+      >
+        <option value="">-- Seleccione Pais --</option>
+        <option *ngFor="let country of countries" [value]="country.alpha3Code">
+          {{ country.name }}
+        </option>
+      </select>
+    </article>
+  </section>
+
   <section class="row">
     <article class="col">
       <button class="btn btn-primary float-end">Seleccionar</button>
