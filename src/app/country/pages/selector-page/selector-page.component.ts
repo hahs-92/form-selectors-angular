@@ -13,10 +13,12 @@ export class SelectorPageComponent implements OnInit {
   myForm = this.fb.group({
     region: ['', [Validators.required]],
     country: ['', Validators.required],
+    border: ['', Validators.required],
   });
 
   regions: string[] = [];
   countries: SmallCountry[] = [];
+  borders: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -38,7 +40,23 @@ export class SelectorPageComponent implements OnInit {
       )
       .subscribe((countries) => {
         this.countries = countries;
-        console.log(countries);
+        //console.log(countries);
+      });
+
+    this.myForm
+      .get('country')
+      ?.valueChanges.pipe(
+        tap((_) => {
+          this.borders = [];
+          this.myForm.get('border')?.reset('');
+        }),
+        switchMap((code) => {
+          return this.serviceCountry.getCountriesByCode(code as string);
+        })
+      )
+      .subscribe((country) => {
+        this.borders = country?.borders || [];
+        console.log(country);
       });
 
     // this.myForm.get('region')?.valueChanges.subscribe((region) => {

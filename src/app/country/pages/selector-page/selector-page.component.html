@@ -26,11 +26,28 @@
         class="form-control"
         name="country"
         formControlName="country"
-        id="region"
+        id="country"
       >
         <option value="">-- Seleccione Pais --</option>
         <option *ngFor="let country of countries" [value]="country.alpha3Code">
           {{ country.name }}
+        </option>
+      </select>
+    </article>
+  </section>
+
+  <section class="row mb-3">
+    <article class="col">
+      <label for="region" class="form-label">Fronteras:</label>
+      <select
+        class="form-control"
+        name="border"
+        formControlName="border"
+        id="border"
+      >
+        <option value="">-- Seleccione el pais fronterizo --</option>
+        <option *ngFor="let border of borders" [value]="border">
+          {{ border }}
         </option>
       </select>
     </article>
