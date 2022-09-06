@@ -11,6 +11,7 @@ import { switchMap, tap } from 'rxjs/operators';
 })
 export class SelectorPageComponent implements OnInit {
   myForm = this.fb.group({
+    //region: [{ value: '', disabled: true }, [Validators.required]],
     region: ['', [Validators.required]],
     country: ['', Validators.required],
     border: ['', Validators.required],
@@ -18,7 +19,10 @@ export class SelectorPageComponent implements OnInit {
 
   regions: string[] = [];
   countries: SmallCountry[] = [];
-  borders: string[] = [];
+  // borders: string[] = [];
+  borders: SmallCountry[] = [];
+
+  loading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -33,6 +37,7 @@ export class SelectorPageComponent implements OnInit {
       ?.valueChanges.pipe(
         tap((_) => {
           this.myForm.get('country')?.reset('');
+          this.loading = true;
         }),
         switchMap((region) => {
           return this.serviceCountry.getCountriesByRegion(region!);
@@ -40,6 +45,7 @@ export class SelectorPageComponent implements OnInit {
       )
       .subscribe((countries) => {
         this.countries = countries;
+        this.loading = false;
         //console.log(countries);
       });
 
@@ -49,14 +55,19 @@ export class SelectorPageComponent implements OnInit {
         tap((_) => {
           this.borders = [];
           this.myForm.get('border')?.reset('');
+          this.loading = true;
         }),
         switchMap((code) => {
           return this.serviceCountry.getCountriesByCode(code as string);
-        })
+        }),
+        switchMap((country) =>
+          this.serviceCountry.getCountriesByBorders(country?.borders!)
+        )
       )
-      .subscribe((country) => {
-        this.borders = country?.borders || [];
-        console.log(country);
+      .subscribe((countries) => {
+        //this.borders = country?.borders || [];
+        this.borders = countries;
+        this.loading = false;
       });
 
     // this.myForm.get('region')?.valueChanges.subscribe((region) => {

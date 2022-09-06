@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
 
 //interfaces
 import { SmallCountry, Country } from '../interfaces/country.interface';
@@ -37,5 +37,27 @@ export class ServiceCountryService {
     }
 
     return this.http.get<Country>(`${this.baseUrl}/alpha/${code}`);
+  }
+
+  getSmallCountryByCode(code: string): Observable<Country> {
+    return this.http.get<Country>(
+      `${this.baseUrl}/alpha/${code}?fileds=alpha3Code;name`
+    );
+  }
+
+  getCountriesByBorders(borders: string[]) {
+    if (!borders) {
+      return of([]);
+    }
+
+    const requests: Observable<SmallCountry>[] = [];
+
+    borders.forEach((code) => {
+      const request = this.getSmallCountryByCode(code);
+      requests.push(request);
+    });
+
+    return combineLatest(requests);
+    //regresa un observable que contiene un arreglo con las peticiones resueltas
   }
 }

@@ -19,9 +19,9 @@
     </article>
   </section>
 
-  <section class="row mb-3">
+  <section class="row mb-3" *ngIf="countries.length !== 0">
     <article class="col">
-      <label for="region" class="form-label">Continente:</label>
+      <label for="region" class="form-label">Pais:</label>
       <select
         class="form-control"
         name="country"
@@ -36,7 +36,7 @@
     </article>
   </section>
 
-  <section class="row mb-3">
+  <section class="row mb-3" *ngIf="borders.length !== 0">
     <article class="col">
       <label for="region" class="form-label">Fronteras:</label>
       <select
@@ -46,10 +46,16 @@
         id="border"
       >
         <option value="">-- Seleccione el pais fronterizo --</option>
-        <option *ngFor="let border of borders" [value]="border">
-          {{ border }}
+        <option *ngFor="let border of borders" [value]="border.alpha3Code">
+          {{ border.name }}
         </option>
       </select>
+    </article>
+  </section>
+
+  <section class="row" *ngIf="loading">
+    <article class="col">
+      <div class="alert alert-primary">Loading...</div>
     </article>
   </section>
 
